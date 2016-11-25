@@ -6,7 +6,8 @@
 
 - name: set administrators
   user: name={{item}} append=yes groups=libvirtd
-  with_items: kvm_administrators
+  with_items:
+    - "{{ kvm_administrators }}"
   when: ansible_os_family == 'Debian'
   tags: ["configuration","kvm"]
 
@@ -42,11 +43,13 @@
         command=define
         xml="{{ lookup('template', 'vm.kvm.libvirt.xml.j2') }}"
         uri={{kvm_uri}}
-  with_items: kvm_vms
+  with_items:
+    - "{{ kvm_vms }}"
   tags: ["configuration","kvm"]
 
 - name: start VMs
   virt: name={{item.name}} state=running uri={{kvm_uri}}
-  with_items: kvm_vms
+  with_items:
+    - "{{ kvm_vms }}"
   tags: ["service","kvm"]
 
